@@ -30,9 +30,9 @@ class SetCardView: UIView {
     
     
     // Creating and positioning the text labels
-    private lazy var centerLabel = createCornerLabel()
+    private lazy var centerLabel = createCenterLabel()
     
-    private func createCornerLabel() -> UILabel {
+    private func createCenterLabel() -> UILabel {
         let label = UILabel()
         // 0 means it wont get cut off
         label.numberOfLines = 0
@@ -51,12 +51,25 @@ class SetCardView: UIView {
     // Init the labels
     override func layoutSubviews() {
         super.layoutSubviews()
+        
         cardGrid.cellCount = Consts.cellCount
         
-        for index in 0..<cardGrid.cellCount {
-            configureCornerLabel(centerLabel, index: index)
-            centerLabel.frame.origin = (cardGrid[index]?.origin)!
+        var labelArray = [UILabel]()
+        
+        for _ in 0..<cardGrid.cellCount {
+            let cardLabel = createCenterLabel()
+            labelArray.append(cardLabel)
         }
+        for index in labelArray.indices {
+            let label = labelArray.removeFirst()
+            configureCornerLabel(label, index: index)
+            label.frame.origin = (cardGrid[index]?.origin)!
+        }
+        
+//        for index in 0..<cardGrid.cellCount {
+//            configureCornerLabel(centerLabel, index: index)
+//            centerLabel.frame.origin = (cardGrid[index]?.origin)!
+//        }
 
     }
     
@@ -83,6 +96,6 @@ class SetCardView: UIView {
 extension SetCardView {
     private struct Consts {
         static let cardAspectRatio: CGFloat = 1/1.586
-        static let cellCount: Int = 1
+        static let cellCount: Int = 15
     }
 }
