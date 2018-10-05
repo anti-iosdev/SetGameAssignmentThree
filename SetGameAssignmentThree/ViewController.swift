@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
     // dummy card (working)
-    var card = SetCard(number: SetCard.Number.one, color: SetCard.Color.one)
+    // var card = SetCard(number: SetCard.Number.one, color: SetCard.Color.one)
     
 //    let labelRect = CGRect(x: 20, y: 20, width: 100, height: 50)
 //    let label = UILabel(frame: labelRect)
