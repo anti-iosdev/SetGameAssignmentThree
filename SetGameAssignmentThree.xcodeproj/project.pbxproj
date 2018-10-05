@@ -13,6 +13,8 @@
 		E95EFE0021658E11005660BB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E95EFDFF21658E11005660BB /* Assets.xcassets */; };
 		E95EFE0321658E11005660BB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E95EFE0121658E11005660BB /* LaunchScreen.storyboard */; };
 		E95EFE0C21658E56005660BB /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95EFE0B21658E56005660BB /* Grid.swift */; };
+		E95EFE0E21659103005660BB /* SetCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95EFE0D21659103005660BB /* SetCard.swift */; };
+		E95EFE12216595C4005660BB /* SetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95EFE11216595C4005660BB /* SetCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +26,8 @@
 		E95EFE0221658E11005660BB /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E95EFE0421658E11005660BB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E95EFE0B21658E56005660BB /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Grid.swift; path = ../../../Downloads/Grid.swift; sourceTree = "<group>"; };
+		E95EFE0D21659103005660BB /* SetCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCard.swift; sourceTree = "<group>"; };
+		E95EFE11216595C4005660BB /* SetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +61,8 @@
 			isa = PBXGroup;
 			children = (
 				E95EFDFA21658E0F005660BB /* ViewController.swift */,
+				E95EFE11216595C4005660BB /* SetCardView.swift */,
+				E95EFE0D21659103005660BB /* SetCard.swift */,
 				E95EFDFC21658E10005660BB /* Main.storyboard */,
 				E95EFE0B21658E56005660BB /* Grid.swift */,
 				E95EFDFF21658E11005660BB /* Assets.xcassets */,
@@ -147,7 +153,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E95EFDFB21658E0F005660BB /* ViewController.swift in Sources */,
+				E95EFE12216595C4005660BB /* SetCardView.swift in Sources */,
 				E95EFDF921658E0F005660BB /* AppDelegate.swift in Sources */,
+				E95EFE0E21659103005660BB /* SetCard.swift in Sources */,
 				E95EFE0C21658E56005660BB /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
