@@ -28,21 +28,50 @@ class SetCardView: UIView {
     //let newView = UIView()
 
     
-    
     override func draw(_ rect: CGRect) {
-        //let newView = UIView()
+        
+        func centeredAttributedString(_ string: String, fontSize: CGFloat) -> NSAttributedString {
+            var font = UIFont.preferredFont(forTextStyle: .body).withSize(fontSize)
+            // required for scaled fonts
+            font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.alignment = .center
+            return NSAttributedString(string: string, attributes: [.paragraphStyle:paragraphStyle,.font:font])
+        }
+        
+        let layoutTest = Grid.Layout.aspectRatio(CGFloat(1/1.586))
+        var gridTest = Grid(layout: layoutTest, frame: rect)
+        
+        gridTest.cellCount = 81
+        
+        for index in 0..<gridTest.cellCount {
+            if let cell = gridTest[index] {
+                let label = UILabel(frame: cell)
+                label.text = String(index)
+                label.attributedText = centeredAttributedString(String(index), fontSize: CGFloat(15))
+                self.addSubview(label)
+                
+                let path = UIBezierPath(rect: cell)
+                path.lineWidth = 2.0
+                UIColor.blue.setStroke()
+                path.stroke()
+            }
+        }
+        
+        
+        /* Spawns a red rectangle with a label in it
         let labelRect = CGRect(x: 20, y: 20, width: 100, height: 50)
         let label = UILabel(frame: labelRect)
         label.text = "Hello"
         self.addSubview(label)
         
-        
-        //UIRectFrame(labelRect)
         let testVar = CGFloat.pi
         let path = UIBezierPath(roundedRect: labelRect, cornerRadius: testVar)
         path.lineWidth = 5.0
         UIColor.red.setStroke()
         path.stroke()
+        */
+        
     }
     
 }
