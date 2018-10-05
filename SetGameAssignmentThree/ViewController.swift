@@ -13,12 +13,19 @@ class ViewController: UIViewController {
     // dummy card (working)
     var card = SetCard(number: SetCard.Number.one, color: SetCard.Color.one)
     
-    
+//    let labelRect = CGRect(x: 20, y: 20, width: 100, height: 50)
+//    let label = UILabel(frame: labelRect)
+//    label.text = "Hello"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //print("card is type: \(card.number.rawValue)")
-        // Do any additional setup after loading the view, typically from a nib.
+        
+        
+        //let newView = UIView()
+//        let labelRect = CGRect(x: 20, y: 20, width: 100, height: 50)
+//        let label = UILabel(frame: labelRect)
+//        label.text = "Hello"
+//        view.addSubview(label)
     }
 
 
