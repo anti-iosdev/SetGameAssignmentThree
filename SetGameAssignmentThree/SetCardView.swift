@@ -69,27 +69,12 @@ class SetCardView: UIView {
             }
         }
         for index in labelArray.indices {
-            let label = labelArray.removeFirst()
-            configureCenterLabel(label, index: index)
-            label.frame.origin = (cardGrid[index]?.origin)!
+            if let cellRect = cardGrid[index] {
+                let label = labelArray.removeFirst()
+                configureCenterLabel(label, index: index)
+                label.center = CGPoint(x: cellRect.midX, y: cellRect.midY)
+            }
         }
-        
-        
-//        for _ in 0..<cardGrid.cellCount {
-//            let cardLabel = createCenterLabel()
-//            labelArray.append(cardLabel)
-//        }
-//        for index in labelArray.indices {
-//            let label = labelArray.removeFirst()
-//            configureCenterLabel(label, index: index)
-//            label.frame.origin = (cardGrid[index]?.origin)!
-//        }
-        
-//        for index in 0..<cardGrid.cellCount {
-//            configureCornerLabel(centerLabel, index: index)
-//            centerLabel.frame.origin = (cardGrid[index]?.origin)!
-//        }
-
     }
     
     override func draw(_ rect: CGRect) {
@@ -109,7 +94,7 @@ class SetCardView: UIView {
 extension SetCardView {
     private struct Consts {
         static let cardAspectRatio: CGFloat = 1/1.586
-        static let cellCount: Int = 12
+        static let cellCount: Int = 81
         static let centerFontSizeToBoundsHeight: CGFloat = 0.4
     }
     private var centerFontSize: CGFloat {
