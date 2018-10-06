@@ -96,11 +96,6 @@ class SetCardView: UIView {
         
         for index in 0..<cardGrid.cellCount {
             if let cell = cardGrid[index] {
-                //let label = UILabel(frame: cell)
-                //label.text = String(index)
-                //label.attributedText = centeredAttributedString(String(index), fontSize: CGFloat(15))
-                //self.addSubview(label)
-                
                 let path = UIBezierPath(rect: cell)
                 // path.addClip()
                 path.lineWidth = 1.0
@@ -108,17 +103,16 @@ class SetCardView: UIView {
                 path.stroke()
             }
         }
-        
     }
 }
 
 extension SetCardView {
     private struct Consts {
         static let cardAspectRatio: CGFloat = 1/1.586
-        static let cellCount: Int = 15
-        static let centerFontSizeToBoundsHeight: CGFloat = 0.05
+        static let cellCount: Int = 12
+        static let centerFontSizeToBoundsHeight: CGFloat = 0.4
     }
     private var centerFontSize: CGFloat {
-        return bounds.size.height * Consts.centerFontSizeToBoundsHeight
+        return cardGrid.cellSize.height * Consts.centerFontSizeToBoundsHeight
     }
 }
