@@ -30,18 +30,18 @@ class SetCardView: UIView {
     
     
     // Creating and positioning the text labels
-    private lazy var centerLabel = createCenterLabel()
+    //private lazy var centerLabel = createCenterLabel()
     
-    private func createCenterLabel() -> UILabel {
-        let label = UILabel()
+    private func createCenterLabel(_ frame: CGRect) -> UILabel {
+        let label = UILabel(frame: frame)
         // 0 means it wont get cut off
         label.numberOfLines = 0
         addSubview(label)
         return label
     }
     
-    private func configureCornerLabel(_ label: UILabel, index: Int) {
-        label.attributedText = centeredAttributedString(String(index), fontSize: CGFloat(30))
+    private func configureCenterLabel(_ label: UILabel, index: Int) {
+        label.attributedText = centeredAttributedString(String(index), fontSize: centerFontSize)
         label.frame.size = CGSize.zero
         label.sizeToFit()
         // label.isHidden = !isFaceUp
@@ -52,19 +52,38 @@ class SetCardView: UIView {
     override func layoutSubviews() {
         super.layoutSubviews()
         
+        // removes subviews from the superview
+        for view in self.subviews{
+            view.removeFromSuperview()
+        }
+        
+        cardGrid = Grid(layout: cardGridLayout, frame: bounds)
         cardGrid.cellCount = Consts.cellCount
         
         var labelArray = [UILabel]()
         
-        for _ in 0..<cardGrid.cellCount {
-            let cardLabel = createCenterLabel()
-            labelArray.append(cardLabel)
+        for index in 0..<cardGrid.cellCount {
+            if let cell = cardGrid[index] {
+                let cardLabel = createCenterLabel(cell)
+                labelArray.append(cardLabel)
+            }
         }
         for index in labelArray.indices {
             let label = labelArray.removeFirst()
-            configureCornerLabel(label, index: index)
+            configureCenterLabel(label, index: index)
             label.frame.origin = (cardGrid[index]?.origin)!
         }
+        
+        
+//        for _ in 0..<cardGrid.cellCount {
+//            let cardLabel = createCenterLabel()
+//            labelArray.append(cardLabel)
+//        }
+//        for index in labelArray.indices {
+//            let label = labelArray.removeFirst()
+//            configureCenterLabel(label, index: index)
+//            label.frame.origin = (cardGrid[index]?.origin)!
+//        }
         
 //        for index in 0..<cardGrid.cellCount {
 //            configureCornerLabel(centerLabel, index: index)
@@ -84,7 +103,7 @@ class SetCardView: UIView {
                 
                 let path = UIBezierPath(rect: cell)
                 // path.addClip()
-                path.lineWidth = 2.0
+                path.lineWidth = 1.0
                 UIColor.blue.setStroke()
                 path.stroke()
             }
@@ -97,5 +116,9 @@ extension SetCardView {
     private struct Consts {
         static let cardAspectRatio: CGFloat = 1/1.586
         static let cellCount: Int = 15
+        static let centerFontSizeToBoundsHeight: CGFloat = 0.05
+    }
+    private var centerFontSize: CGFloat {
+        return bounds.size.height * Consts.centerFontSizeToBoundsHeight
     }
 }
