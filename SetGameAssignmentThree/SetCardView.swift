@@ -120,25 +120,7 @@ class SetCardView: UIView {
 //    path.stroke()
 //    context!.restoreGState()
 //
-    func drawSquare(_ rect: CGRect) {
-        let context = UIGraphicsGetCurrentContext()
-        
-        let center = CGPoint(x: rect.midX-squareSize/2, y: rect.midY-squareSize/2)
-        let sizeRect = CGSize(width: squareSize, height: squareSize)
-        let drawnRect = CGRect(origin: center, size: sizeRect)
-        
-        let path = UIBezierPath(rect: drawnRect)
-        
-        // making sure of clipping
-        context!.saveGState()
-        path.addClip()
 
-        drawShading(path, rect: rect)
-        
-        path.lineWidth = 3.0
-        path.stroke()
-        context!.restoreGState()
-    }
     
     func drawCircleTemp(_ rect: CGRect, card: SetCard) {
         // defining shape
@@ -213,13 +195,14 @@ class SetCardView: UIView {
     
     func drawStripes(_ cellRect: CGRect) {
         //let center = CGPoint(x: cellRect.midX-shapeSize, y: cellRect.midY-shapeSize/2)
-        var stripeRect = CGRect(x: cellRect.minX, y: cellRect.minY, width: cellRect.width, height: cellRect.height/2)
+        let width = cellRect.width*1.3
+        var stripeRect = CGRect(x: cellRect.minX-width*0.2, y: cellRect.minY, width: width, height: cellRect.height/2)
         let path = UIBezierPath(rect: stripeRect)
         path.lineWidth = 2.0
         //UIColor.blue.setStroke()
         path.stroke()
         
-        stripeRect = CGRect(x: cellRect.minX, y: cellRect.midY-shapeSize/2, width: cellRect.width, height: shapeSize)
+        stripeRect = CGRect(x: cellRect.minX-width*0.2, y: cellRect.midY-shapeSize/2, width: width, height: shapeSize)
         let path2 = UIBezierPath(rect: stripeRect)
         path2.lineWidth = 2.0
         //UIColor.blue.setStroke()
@@ -233,7 +216,7 @@ class SetCardView: UIView {
             if shading == 1 {
                 UIColor.white.setFill()
                 path.fill()
-                UIColor.black.setStroke()
+                card.color.result.setStroke()
             } else if shading == 2 {
                 card.color.result.setFill()
                 path.fill()
@@ -247,33 +230,113 @@ class SetCardView: UIView {
         }
     }
     
+    func drawSquare(_ rect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        let center = CGPoint(x: rect.midX-squareSize/2, y: rect.midY-squareSize/2)
+        let sizeRect = CGSize(width: squareSize, height: squareSize)
+        let drawnRect = CGRect(origin: center, size: sizeRect)
+        
+        let path = UIBezierPath(rect: drawnRect)
+        
+        // making sure of clipping
+        context!.saveGState()
+        path.addClip()
+        
+        drawShading(path, rect: rect)
+        
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
+    }
+    
+    func drawCircle(_ rect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        
+        // making sure of clipping
+        context!.saveGState()
+        path.addClip()
+        
+        drawShading(path, rect: rect)
+        
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
+    }
+    
+    func drawSquiggle(_ rect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        
+        //let pathExperiment = UIBezierPath(
+        
+        // making sure of clipping
+        context!.saveGState()
+        path.addClip()
+        
+        drawShading(path, rect: rect)
+        
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
+    }
+    
+    func drawDiamond(_ rect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        let center = CGPoint(x: rect.midX-squareSize/2, y: rect.midY-squareSize/2)
+        let sizeRect = CGSize(width: squareSize, height: squareSize)
+        let drawnRect = CGRect(origin: center, size: sizeRect)
+        
+        let rotation = CGAffineTransform(rotationAngle: CGFloat.pi)
+        //drawnRect.applying(rotation)
+        
+        let rotatedRect = drawnRect.applying(rotation)
+        
+        let path = UIBezierPath(rect: rotatedRect)
+        
+        
+        // making sure of clipping
+        context!.saveGState()
+        path.addClip()
+        
+        drawShading(path, rect: rect)
+        
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
+    }
+    
+    func drawOval(_ rect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        let width = squareSize*1.5
+        let center = CGPoint(x: rect.midX-width/2, y: rect.midY-squareSize/2)
+        let sizeRect = CGSize(width: squareSize*1.5, height: squareSize)
+        let drawnRect = CGRect(origin: center, size: sizeRect)
+        
+        let path = UIBezierPath(ovalIn: drawnRect)
+        
+        // making sure of clipping
+        context!.saveGState()
+        path.addClip()
+        
+        drawShading(path, rect: rect)
+        
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
+    }
+    
     func masterDrawFunction() {
         if let card = currentCard, let cardGrid = cardCellMiniGrid {
             for index in 0..<cardGrid.cellCount {
                 if let rect = cardGrid[index] {
                     
-                    drawSquare(rect)
-                    
-                    /*
-                    
-                    // defining shape
-//                    let shading = card.shading.result
-                    let context = UIGraphicsGetCurrentContext()
-                    let center = CGPoint(x: rect.midX, y: rect.midY)
-                    let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
-                    
-                    // making sure of clipping
-                    context!.saveGState()
-                    path.addClip()
-                    
-
-                    drawShading(path, rect: rect)
-                    
-                    path.lineWidth = 3.0
-                    path.stroke()
-                    context!.restoreGState()
- 
-                    */
+                    //drawSquare(rect)
+                    drawCircle(rect)
+                    //drawOval(rect)
+                    //drawDiamond(rect)
                 }
             }
         }
@@ -315,19 +378,15 @@ class SetCardView: UIView {
         
         for index in 0..<cardGrid.cellCount {
             if let cell = cardGrid[index] {
+                // draw in the grid
                 let path = UIBezierPath(rect: cell)
-                // path.addClip()
-                path.lineWidth = 1.0
-                UIColor.blue.setStroke()
+                path.lineWidth = 2.0
+                UIColor.gray.setStroke()
                 path.stroke()
-                //drawCircle(cell)
-                //drawStripedCircle(cell)
-                //drawSquare(cell)
-                //cellGridDraw(cell, row: 2)
-                //card = deck[index]
+                
+                // draw shapes in the grid
                 currentIndex = index
                 masterDrawFunction()
-                //cardDrawer(rect: cell, card: deck[index])
             }
         }
     }
@@ -347,6 +406,6 @@ extension SetCardView {
         return cardGrid.cellSize.width * Consts.shapeRatio
     }
     private var squareSize: CGFloat {
-        return shapeSize*1.41421356237
+        return shapeSize*1.8
     }
 }
