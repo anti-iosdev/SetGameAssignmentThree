@@ -12,11 +12,11 @@ class SetCardView: UIView {
     
     var deck = [SetCard]() { didSet { setNeedsDisplay(); setNeedsLayout() } }
     
-    func cardPrinter() {
-        for card in deck {
-            print("card = \(card)")
-        }
-    }
+//    func cardPrinter() {
+//        for card in deck {
+//            print("card = \(card)")
+//        }
+//    }
     
 
     
@@ -95,15 +95,15 @@ class SetCardView: UIView {
     //////////////////////////
     // Drawing Logic
     
-    func drawCircle(_ cellRect: CGRect) {
-        let center = CGPoint(x: cellRect.midX, y: cellRect.midY)
-        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
-        path.lineWidth = 1.0
-        UIColor.blue.setStroke()
-        UIColor.white.setFill()
-        path.stroke()
-        path.fill()
-    }
+//    func drawCircle(_ cellRect: CGRect) {
+//        let center = CGPoint(x: cellRect.midX, y: cellRect.midY)
+//        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+//        path.lineWidth = 1.0
+//        UIColor.blue.setStroke()
+//        UIColor.white.setFill()
+//        path.stroke()
+//        path.fill()
+//    }
     
     func drawStripes(_ cellRect: CGRect) {
         //let center = CGPoint(x: cellRect.midX-shapeSize, y: cellRect.midY-shapeSize/2)
@@ -172,7 +172,33 @@ class SetCardView: UIView {
         context!.restoreGState()
     }
     
-    
+    func drawCircle(_ rect: CGRect, card: SetCard) {
+        // defining shape
+        let shading = card.shading.result
+        let context = UIGraphicsGetCurrentContext()
+        let center = CGPoint(x: rect.midX, y: rect.midY)
+        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        
+        // making sure of clipping
+        context!.saveGState()
+        path.addClip()
+        
+        // check shading for cases: 1 = empty, 2 = fill, 3 = striped
+        if shading == 1 {
+            UIColor.white.setFill()
+            path.fill()
+        } else if shading == 2 {
+            card.color.result.setFill()
+            path.fill()
+        } else if shading == 3 {
+            UIColor.white.setFill()
+            path.fill()
+            drawFourStripes(rect)
+        }
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
+    }
 
     
     //////////////////////////
@@ -182,23 +208,25 @@ class SetCardView: UIView {
         return CGRect(x: rect.minX+rect.width/4, y: rect.minY, width: rect.width-rect.width/2, height: rect.height)
     }
     
-    func cellGridDraw(_ rect: CGRect, number: Int, color: UIColor) {
-        let cellGridLayout = Grid.Layout.dimensions(rowCount: number, columnCount: 1)
+    func cellGridDraw(_ rect: CGRect, card: SetCard) {
+        let cellGridLayout = Grid.Layout.dimensions(rowCount: card.number.rawValue, columnCount: 1)
         let cellGridRectangle = cellGridRect(rect)
         let cellGrid = Grid(layout: cellGridLayout, frame: cellGridRectangle)
         
-        color.setStroke()
+        card.color.result.setStroke()
+        card.color.result.setFill()
         
         for cell in 0..<cellGrid.cellCount {
             if let cellGridCell = cellGrid[cell] {
-                drawStripedCircle(cellGridCell)
+                drawCircle(cellGridCell, card: card)
             }
         }
     }
     
+    var cardGlobal: SetCard?
     
     func cardDrawer(rect: CGRect, card: SetCard) {
-        cellGridDraw(rect, number: card.number.rawValue, color: card.color.result)
+        cellGridDraw(rect, card: card)
         // print("number: \(card.number.rawValue), color: \(card.color)")
     }
     
@@ -217,7 +245,11 @@ class SetCardView: UIView {
                 //drawStripedCircle(cell)
                 //drawSquare(cell)
                 //cellGridDraw(cell, row: 2)
-                cardDrawer(rect: cell, card: deck.removeFirst())
+                //card = deck[index]
+                
+                cardGlobal = deck[index]
+                
+                cardDrawer(rect: cell, card: deck[index])
             }
         }
     }

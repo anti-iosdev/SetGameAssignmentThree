@@ -62,9 +62,9 @@ struct SetCard
         
         var result: Int {
             switch self {
-            case .one: return -1
-            case .two: return 10
-            case .three: return 15
+            case .one: return 1
+            case .two: return 2
+            case .three: return 3
             }
         }
         
