@@ -12,7 +12,13 @@ import UIKit
 struct SetCard
 {
     var number: Number
+    var symbol: Symbol
+    var shading: Shading
     var color: Color
+    
+    var isFaceUp = false
+    var isSelected = false
+    var isMatched = false
     
     enum Number: Int {
         case one = 1
@@ -22,6 +28,55 @@ struct SetCard
         static var all = [Number.one,.two,.three]
         
         var description: Int { return rawValue }
+    }
+    
+    enum Symbol {
+        case one
+        case two
+        case three
+        
+        var result: String {
+            switch self {
+            case .one: return "▲"
+            case .two: return "●"
+            case .three: return "■"
+            }
+        }
+        
+        var match: Int {
+            switch self {
+            case .one: return 1
+            case .two: return 2
+            case .three: return 3
+            }
+        }
+        
+        static var all = [Symbol.one,.two,.three]
+    }
+    
+    enum Shading {
+        // filled in, hollow, striped
+        case one
+        case two
+        case three
+        
+        var result: Int {
+            switch self {
+            case .one: return -1
+            case .two: return 10
+            case .three: return 15
+            }
+        }
+        
+        var match: Int {
+            switch self {
+            case .one: return 1
+            case .two: return 2
+            case .three: return 3
+            }
+        }
+        
+        static var all = [Shading.one,.two,.three]
     }
     
     enum Color {
@@ -44,6 +99,8 @@ struct SetCard
             case .three: return 3
             }
         }
+    
+        
         
         static var all = [Color.one,.two,.three]
     }

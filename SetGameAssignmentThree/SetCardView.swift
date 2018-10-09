@@ -10,6 +10,15 @@ import UIKit
 
 class SetCardView: UIView {
     
+    var deck = [SetCard]() { didSet { setNeedsDisplay(); setNeedsLayout() } }
+    
+    func cardPrinter() {
+        for card in deck {
+            print("card = \(card)")
+        }
+    }
+    
+
     
     //    var card: SetCard = SetCard(number: SetCard.Number.one, color: SetCard.Color.one) { didSet { setNeedsDisplay(); setNeedsLayout() } }
     //    var isFaceUp: Bool = true { didSet { setNeedsDisplay(); setNeedsLayout() } }
@@ -109,15 +118,34 @@ class SetCardView: UIView {
         //let center = CGPoint(x: cellRect.midX-shapeSize, y: cellRect.midY-shapeSize/2)
         var stripeRect = CGRect(x: cellRect.minX, y: cellRect.minY, width: cellRect.width, height: cellRect.height/2)
         let path = UIBezierPath(rect: stripeRect)
-        path.lineWidth = 1.0
-        UIColor.blue.setStroke()
+        path.lineWidth = 2.0
+        //UIColor.blue.setStroke()
         path.stroke()
         
         stripeRect = CGRect(x: cellRect.minX, y: cellRect.midY-shapeSize/2, width: cellRect.width, height: shapeSize)
         let path2 = UIBezierPath(rect: stripeRect)
-        path2.lineWidth = 1.0
-        UIColor.blue.setStroke()
+        path2.lineWidth = 2.0
+        //UIColor.blue.setStroke()
         path2.stroke()
+    }
+    
+    func drawSquare(_ cellRect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        
+        let drawnRect = CGRect(x: cellRect.minX+cellRect.width/4, y: cellRect.minY, width: cellRect.width-cellRect.width/2, height: cellRect.height)
+        
+        let path = UIBezierPath(rect: drawnRect)
+        
+        context!.saveGState()
+        path.addClip()
+        //UIColor.blue.setStroke()
+        UIColor.white.setFill()
+        path.fill()
+        //drawFourStripes(cellRect)
+        //UIColor.black.setStroke()
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
     }
     
     func drawStripedCircle(_ cellRect: CGRect) {
@@ -127,34 +155,25 @@ class SetCardView: UIView {
         //path.lineWidth = 1.0
         context!.saveGState()
         path.addClip()
-        UIColor.blue.setStroke()
+        //////////// Color in the stripes
+        //UIColor.blue.setStroke()
+        
+        
         UIColor.white.setFill()
         path.fill()
         drawFourStripes(cellRect)
-        UIColor.black.setStroke()
+        
+        //////////// Color in the outline
+        //UIColor.black.setStroke()
+        
+        
         path.lineWidth = 3.0
         path.stroke()
         context!.restoreGState()
     }
     
-    func drawSquare(_ cellRect: CGRect) {
-        let context = UIGraphicsGetCurrentContext()
+    
 
-        let drawnRect = CGRect(x: cellRect.minX+cellRect.width/4, y: cellRect.minY, width: cellRect.width-cellRect.width/2, height: cellRect.height)
-        
-        let path = UIBezierPath(rect: drawnRect)
-        
-        context!.saveGState()
-        path.addClip()
-        UIColor.blue.setStroke()
-        UIColor.white.setFill()
-        path.fill()
-        //drawFourStripes(cellRect)
-        UIColor.black.setStroke()
-        path.lineWidth = 3.0
-        path.stroke()
-        context!.restoreGState()
-    }
     
     //////////////////////////
     // Gridding Logic
@@ -163,16 +182,24 @@ class SetCardView: UIView {
         return CGRect(x: rect.minX+rect.width/4, y: rect.minY, width: rect.width-rect.width/2, height: rect.height)
     }
     
-    func cellGridDraw(_ rect: CGRect, row: Int) {
-        let cellGridLayout = Grid.Layout.dimensions(rowCount: row, columnCount: 1)
+    func cellGridDraw(_ rect: CGRect, number: Int, color: UIColor) {
+        let cellGridLayout = Grid.Layout.dimensions(rowCount: number, columnCount: 1)
         let cellGridRectangle = cellGridRect(rect)
         let cellGrid = Grid(layout: cellGridLayout, frame: cellGridRectangle)
+        
+        color.setStroke()
         
         for cell in 0..<cellGrid.cellCount {
             if let cellGridCell = cellGrid[cell] {
                 drawStripedCircle(cellGridCell)
             }
         }
+    }
+    
+    
+    func cardDrawer(rect: CGRect, card: SetCard) {
+        cellGridDraw(rect, number: card.number.rawValue, color: card.color.result)
+        // print("number: \(card.number.rawValue), color: \(card.color)")
     }
     
     //////////////////////////
@@ -189,7 +216,8 @@ class SetCardView: UIView {
                 //drawCircle(cell)
                 //drawStripedCircle(cell)
                 //drawSquare(cell)
-                cellGridDraw(cell, row: 2)
+                //cellGridDraw(cell, row: 2)
+                cardDrawer(rect: cell, card: deck.removeFirst())
             }
         }
     }

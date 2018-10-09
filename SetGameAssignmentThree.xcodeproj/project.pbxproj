@@ -15,6 +15,8 @@
 		E95EFE0C21658E56005660BB /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95EFE0B21658E56005660BB /* Grid.swift */; };
 		E95EFE0E21659103005660BB /* SetCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95EFE0D21659103005660BB /* SetCard.swift */; };
 		E95EFE12216595C4005660BB /* SetCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E95EFE11216595C4005660BB /* SetCardView.swift */; };
+		E9EFA968216C682400D83FFB /* SetCardDeck.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EFA967216C682400D83FFB /* SetCardDeck.swift */; };
+		E9EFA96A216C68C200D83FFB /* SetGame.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EFA969216C68C200D83FFB /* SetGame.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +30,8 @@
 		E95EFE0B21658E56005660BB /* Grid.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Grid.swift; path = ../../../Downloads/Grid.swift; sourceTree = "<group>"; };
 		E95EFE0D21659103005660BB /* SetCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCard.swift; sourceTree = "<group>"; };
 		E95EFE11216595C4005660BB /* SetCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCardView.swift; sourceTree = "<group>"; };
+		E9EFA967216C682400D83FFB /* SetCardDeck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetCardDeck.swift; sourceTree = "<group>"; };
+		E9EFA969216C68C200D83FFB /* SetGame.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetGame.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +67,8 @@
 				E95EFDFA21658E0F005660BB /* ViewController.swift */,
 				E95EFE11216595C4005660BB /* SetCardView.swift */,
 				E95EFE0D21659103005660BB /* SetCard.swift */,
+				E9EFA969216C68C200D83FFB /* SetGame.swift */,
+				E9EFA967216C682400D83FFB /* SetCardDeck.swift */,
 				E95EFDFC21658E10005660BB /* Main.storyboard */,
 				E95EFE0B21658E56005660BB /* Grid.swift */,
 				E95EFDFF21658E11005660BB /* Assets.xcassets */,
@@ -157,6 +163,8 @@
 				E95EFDF921658E0F005660BB /* AppDelegate.swift in Sources */,
 				E95EFE0E21659103005660BB /* SetCard.swift in Sources */,
 				E95EFE0C21658E56005660BB /* Grid.swift in Sources */,
+				E9EFA968216C682400D83FFB /* SetCardDeck.swift in Sources */,
+				E9EFA96A216C68C200D83FFB /* SetGame.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

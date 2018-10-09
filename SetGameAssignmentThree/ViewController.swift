@@ -10,6 +10,32 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    //lazy var game = SetGame(numberOfTotalSlots: 12)
+    var deck = SetCardDeck()
+
+    /////
+    lazy var cards = shuffledDeck()
+    
+    func shuffledDeck() -> [SetCard] {
+        var cards = [SetCard]()
+        for _ in deck.cards.indices {
+            if let appendedCard = deck.draw() {
+                cards.append(appendedCard)
+            }
+        }
+        return cards
+    }
+    
+    /////
+    
+    @IBOutlet weak var setCardView: SetCardView! {
+        didSet {
+            setCardView.deck = cards
+        }
+    }
+    
+    /////
+    
     // dummy card (working)
     // var card = SetCard(number: SetCard.Number.one, color: SetCard.Color.one)
     
