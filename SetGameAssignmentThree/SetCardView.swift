@@ -9,9 +9,9 @@
 import UIKit
 
 class SetCardView: UIView {
-
-//    var card: SetCard = SetCard(number: SetCard.Number.one, color: SetCard.Color.one) { didSet { setNeedsDisplay(); setNeedsLayout() } }
-//    var isFaceUp: Bool = true { didSet { setNeedsDisplay(); setNeedsLayout() } }
+    
+    //    var card: SetCard = SetCard(number: SetCard.Number.one, color: SetCard.Color.one) { didSet { setNeedsDisplay(); setNeedsLayout() } }
+    //    var isFaceUp: Bool = true { didSet { setNeedsDisplay(); setNeedsLayout() } }
     
     
     // Definitions
@@ -57,25 +57,104 @@ class SetCardView: UIView {
             view.removeFromSuperview()
         }
         
+        // initialize the Grid whenever the layout changes
         cardGrid = Grid(layout: cardGridLayout, frame: bounds)
         cardGrid.cellCount = Consts.cellCount
         
-        var labelArray = [UILabel]()
-        
-        for index in 0..<cardGrid.cellCount {
-            if let cell = cardGrid[index] {
-                let cardLabel = createCenterLabel(cell)
-                labelArray.append(cardLabel)
+        func drawIndexes() {
+            // setting up the labels
+            var labelArray = [UILabel]()
+            
+            for index in 0..<cardGrid.cellCount {
+                if let cell = cardGrid[index] {
+                    let cardLabel = createCenterLabel(cell)
+                    labelArray.append(cardLabel)
+                }
             }
-        }
-        for index in labelArray.indices {
-            if let cellRect = cardGrid[index] {
-                let label = labelArray.removeFirst()
-                configureCenterLabel(label, index: index)
-                label.center = CGPoint(x: cellRect.midX, y: cellRect.midY)
+            for index in labelArray.indices {
+                if let cellRect = cardGrid[index] {
+                    let label = labelArray.removeFirst()
+                    configureCenterLabel(label, index: index)
+                    label.center = CGPoint(x: cellRect.midX, y: cellRect.midY)
+                }
             }
         }
     }
+    
+    //////////////////////////
+    
+    func drawCircle(_ cellRect: CGRect) {
+        let center = CGPoint(x: cellRect.midX, y: cellRect.midY)
+        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        path.lineWidth = 1.0
+        UIColor.blue.setStroke()
+        UIColor.white.setFill()
+        path.stroke()
+        path.fill()
+    }
+    
+    func drawStripes(_ cellRect: CGRect) {
+        //let center = CGPoint(x: cellRect.midX-shapeSize, y: cellRect.midY-shapeSize/2)
+        let stripeRect = CGRect(x: cellRect.midX-shapeSize*1.1, y: cellRect.midY-shapeSize/3, width: 2*shapeSize*1.1, height: shapeSize/1.5)
+        let path = UIBezierPath(rect: stripeRect)
+        path.lineWidth = 5.0
+        UIColor.red.setStroke()
+        path.stroke()
+    }
+    
+    func drawFourStripes(_ cellRect: CGRect) {
+        //let center = CGPoint(x: cellRect.midX-shapeSize, y: cellRect.midY-shapeSize/2)
+        var stripeRect = CGRect(x: cellRect.minX, y: cellRect.minY, width: cellRect.width, height: cellRect.height/2)
+        let path = UIBezierPath(rect: stripeRect)
+        path.lineWidth = 1.0
+        UIColor.blue.setStroke()
+        path.stroke()
+        
+        stripeRect = CGRect(x: cellRect.minX, y: cellRect.midY-shapeSize/2, width: cellRect.width, height: shapeSize)
+        let path2 = UIBezierPath(rect: stripeRect)
+        path2.lineWidth = 1.0
+        UIColor.blue.setStroke()
+        path2.stroke()
+    }
+    
+    func drawStripedCircle(_ cellRect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        let center = CGPoint(x: cellRect.midX, y: cellRect.midY)
+        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        //path.lineWidth = 1.0
+        context!.saveGState()
+        path.addClip()
+        UIColor.blue.setStroke()
+        UIColor.white.setFill()
+        path.fill()
+        drawFourStripes(cellRect)
+        UIColor.black.setStroke()
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
+    }
+    
+    func drawSquare(_ cellRect: CGRect) {
+        let context = UIGraphicsGetCurrentContext()
+        //let center = CGPoint(x: cellRect.midX, y: cellRect.midY)
+        //let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        let drawnRect = CGRect(x: cellRect.midX-shapeSize*1.5/2, y: cellRect.midY, width: 1.5*shapeSize, height: 1.5*shapeSize)
+        let path = UIBezierPath(rect: drawnRect)
+        //path.lineWidth = 1.0
+        context!.saveGState()
+        path.addClip()
+        UIColor.blue.setStroke()
+        UIColor.white.setFill()
+        path.fill()
+        drawFourStripes(cellRect)
+        UIColor.black.setStroke()
+        path.lineWidth = 3.0
+        path.stroke()
+        context!.restoreGState()
+    }
+    
+    
+    //////////////////////////
     
     override func draw(_ rect: CGRect) {
         
@@ -86,6 +165,9 @@ class SetCardView: UIView {
                 path.lineWidth = 1.0
                 UIColor.blue.setStroke()
                 path.stroke()
+                //drawCircle(cell)
+                drawStripedCircle(cell)
+                //drawSquare(cell)
             }
         }
     }
@@ -93,11 +175,15 @@ class SetCardView: UIView {
 
 extension SetCardView {
     private struct Consts {
+        static let cellCount: Int = 12
         static let cardAspectRatio: CGFloat = 1/1.586
-        static let cellCount: Int = 81
         static let centerFontSizeToBoundsHeight: CGFloat = 0.4
+        static let shapeRatio: CGFloat = 0.2
     }
     private var centerFontSize: CGFloat {
         return cardGrid.cellSize.height * Consts.centerFontSizeToBoundsHeight
+    }
+    private var shapeSize: CGFloat {
+        return cardGrid.cellSize.width * Consts.shapeRatio
     }
 }
