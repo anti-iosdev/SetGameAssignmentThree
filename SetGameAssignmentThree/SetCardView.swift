@@ -220,12 +220,14 @@ class SetCardView: UIView {
             } else if shading == 2 {
                 card.color.result.setFill()
                 path.fill()
-                UIColor.black.setStroke()
+                //UIColor.black.setStroke()
+                card.color.result.setStroke()
             } else if shading == 3 {
                 UIColor.white.setFill()
                 path.fill()
                 card.color.result.setStroke()
                 drawStripes(rect)
+                //UIColor.black.setStroke()
             }
         }
     }
@@ -267,17 +269,8 @@ class SetCardView: UIView {
     
     func drawSquiggle(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
-        let center = CGPoint(x: rect.midX, y: rect.midY)
-        //let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: CGFloat.pi, clockwise: true)
         
-        var movedCenter = center
-        movedCenter.x = movedCenter.x - shapeSize
-        let curvedPath = UIBezierPath(arcCenter: movedCenter, radius: shapeSize, startAngle: 0, endAngle: CGFloat.pi, clockwise: false)
-        
-        //path.append(curvedPath)
-        //let pathExperiment = UIBezierPath(
-        
-        // retrying circle shape
+        // defining the circles
         let centerSemiOne = CGPoint(x: rect.midX+shapeSize/2, y: rect.midY)
         let centerSemiTwo = CGPoint(x: rect.midX-shapeSize/2, y: rect.midY)
         
@@ -350,12 +343,18 @@ class SetCardView: UIView {
         if let card = currentCard, let cardGrid = cardCellMiniGrid {
             for index in 0..<cardGrid.cellCount {
                 if let rect = cardGrid[index] {
-                    
+                    if card.symbol.match == 1 {
+                        drawSquiggle(rect)
+                    } else if card.symbol.match == 2 {
+                        drawDiamond(rect)
+                    } else if card.symbol.match == 3 {
+                        drawOval(rect)
+                    }
                     //drawSquare(rect)
                     //drawCircle(rect)
                     //drawOval(rect)
                     //drawDiamond(rect)
-                    drawSquiggle(rect)
+                    //drawSquiggle(rect)
                 }
             }
         }

@@ -86,9 +86,9 @@ struct SetCard
         
         var result:  UIColor {
             switch self {
-            case .one: return #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            case .two: return #colorLiteral(red: 1, green: 0.1491314173, blue: 0, alpha: 1)
-            case .three: return #colorLiteral(red: 0.01680417731, green: 0.1983509958, blue: 1, alpha: 1)
+            case .one: return #colorLiteral(red: 0.4666666687, green: 0.7647058964, blue: 0.2666666806, alpha: 1)
+            case .two: return #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1)
+            case .three: return #colorLiteral(red: 0, green: 0.4784313725, blue: 1, alpha: 1)
             }
         }
         
