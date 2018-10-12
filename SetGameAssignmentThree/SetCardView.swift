@@ -10,48 +10,11 @@ import UIKit
 
 class SetCardView: UIView {
     
+    // Essential Definitions
     var deck = [SetCard]() { didSet { setNeedsDisplay(); setNeedsLayout() } }
-    
-    
 
-    
-    //    var card: SetCard = SetCard(number: SetCard.Number.one, color: SetCard.Color.one) { didSet { setNeedsDisplay(); setNeedsLayout() } }
-    //    var isFaceUp: Bool = true { didSet { setNeedsDisplay(); setNeedsLayout() } }
-    
-    
-    // Definitions
     let cardGridLayout = Grid.Layout.aspectRatio(Consts.cardAspectRatio) 
     lazy var cardGrid = Grid(layout: cardGridLayout, frame: bounds)
-    
-    // Drawing the Strings
-    func centeredAttributedString(_ string: String, fontSize: CGFloat) -> NSAttributedString {
-        var font = UIFont.preferredFont(forTextStyle: .body).withSize(fontSize)
-        // required for scaled fonts
-        font = UIFontMetrics(forTextStyle: .body).scaledFont(for: font)
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.alignment = .center
-        return NSAttributedString(string: string, attributes: [.paragraphStyle:paragraphStyle,.font:font])
-    }
-    
-    
-    // Creating and positioning the text labels
-    //private lazy var centerLabel = createCenterLabel()
-    
-    private func createCenterLabel(_ frame: CGRect) -> UILabel {
-        let label = UILabel(frame: frame)
-        // 0 means it wont get cut off
-        label.numberOfLines = 0
-        addSubview(label)
-        return label
-    }
-    
-    private func configureCenterLabel(_ label: UILabel, index: Int) {
-        label.attributedText = centeredAttributedString(String(index), fontSize: centerFontSize)
-        label.frame.size = CGSize.zero
-        label.sizeToFit()
-        // label.isHidden = !isFaceUp
-    }
-    
     
     // Init the labels
     override func layoutSubviews() {
@@ -65,94 +28,13 @@ class SetCardView: UIView {
         // initialize the Grid whenever the layout changes
         cardGrid = Grid(layout: cardGridLayout, frame: bounds)
         cardGrid.cellCount = Consts.cellCount
-        
-        func drawIndexes() {
-            // setting up the labels
-            var labelArray = [UILabel]()
-            
-            for index in 0..<cardGrid.cellCount {
-                if let cell = cardGrid[index] {
-                    let cardLabel = createCenterLabel(cell)
-                    labelArray.append(cardLabel)
-                }
-            }
-            for index in labelArray.indices {
-                if let cellRect = cardGrid[index] {
-                    let label = labelArray.removeFirst()
-                    configureCenterLabel(label, index: index)
-                    label.center = CGPoint(x: cellRect.midX, y: cellRect.midY)
-                }
-            }
-        }
-    }
-    
-
-    //////////////////////////
-    // Drawing Logic
-    
-    
-//    func drawShading(_ path: UIBezierPath, shading: Int) {
-//        if shading == 1 {
-//            UIColor.white.setFill()
-//            path.fill()
-//        } else if shading == 2 {
-//            card.color.result.setFill()
-//            path.fill()
-//        } else if shading == 3 {
-//            UIColor.white.setFill()
-//            path.fill()
-//            drawFourStripes(rect)
-//        }
-//    }
-    
-//    let context = UIGraphicsGetCurrentContext()
-//    let center = CGPoint(x: rect.midX, y: rect.midY)
-//    let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
-//
-//    // making sure of clipping
-//    context!.saveGState()
-//    path.addClip()
-//
-//
-//    drawShading(path, rect: rect)
-//
-//    path.lineWidth = 3.0
-//    path.stroke()
-//    context!.restoreGState()
-//
-
-    
-    func drawCircleTemp(_ rect: CGRect, card: SetCard) {
-        // defining shape
-        let shading = card.shading.result
-        let context = UIGraphicsGetCurrentContext()
-        let center = CGPoint(x: rect.midX, y: rect.midY)
-        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
-        
-        // making sure of clipping
-        context!.saveGState()
-        path.addClip()
-        
-        // check shading for cases: 1 = empty, 2 = fill, 3 = striped
-        if shading == 1 {
-            UIColor.white.setFill()
-            path.fill()
-        } else if shading == 2 {
-            card.color.result.setFill()
-            path.fill()
-        } else if shading == 3 {
-            UIColor.white.setFill()
-            path.fill()
-            drawStripes(rect)
-        }
-        path.lineWidth = 3.0
-        path.stroke()
-        context!.restoreGState()
     }
 
     //-------------------------------------------------------------
     // Refactored Code
     
+    /////////////////////////////////////////////
+    // Defining Variables
     var currentIndex: Int? {
         didSet {
             if let index = currentIndex {
@@ -162,13 +44,28 @@ class SetCardView: UIView {
         }
     }
     
+    //-------------------------------------------------------------
+    // Test Code
+    
+    var cardButtons = [UIButton]()
+
+    private func createUIButton(_ rect: CGRect) -> UIButton {
+        let button = UIButton(frame: rect)
+        addSubview(button)
+        print("\(button)")
+        return button
+    }
+    
+    
+    
+    //-------------------------------------------------------------
+    
     // set after currentIndex is set
     var cardCellMiniGridLayout: Grid.Layout?
     var currentCard: SetCard? {
         didSet {
             if let card = currentCard {
                 cardCellMiniGridLayout = Grid.Layout.dimensions(rowCount: card.number.rawValue, columnCount: 1)
-                
             }
         }
     }
@@ -176,6 +73,7 @@ class SetCardView: UIView {
         didSet {
             if let rect = currentCardCell {
                 cardCellMini = cardCellMiniConverter(rect)
+                cardButtons.append(createUIButton(rect))
             }
         }
     }
@@ -188,11 +86,12 @@ class SetCardView: UIView {
     }
     var cardCellMiniGrid: Grid?
     
-    // functions
     func cardCellMiniConverter(_ rect: CGRect) -> CGRect {
         return CGRect(x: rect.minX+rect.width/4, y: rect.minY, width: rect.width-rect.width/2, height: rect.height)
     }
     
+    /////////////////////////////////////////////
+    // Drawing Logic
     func drawStripes(_ cellRect: CGRect) {
         //let center = CGPoint(x: cellRect.midX-shapeSize, y: cellRect.midY-shapeSize/2)
         let width = cellRect.width*1.4
@@ -350,69 +249,13 @@ class SetCardView: UIView {
                     } else if card.symbol.match == 3 {
                         drawOval(rect)
                     }
-                    //drawSquare(rect)
-                    //drawCircle(rect)
-                    //drawOval(rect)
-                    //drawDiamond(rect)
-                    //drawSquiggle(rect)
                 }
             }
         }
     }
-    
-    //-------------------------------------------------------------
-    // Corner Labels
-    
-    private func createCornerLabel() -> UILabel {
-        let label = UILabel()
-        // 0 means it wont get cut off
-        // label.numberOfLines = 0
-        addSubview(label)
-        return label
-    }
-    
-    private func configureCornerLabel(_ label: UILabel) {
-        //label.attributedText = cornerString
-        // clears its size
-        //label.frame =
-        label.frame.size = CGSize.zero
-        label.sizeToFit()
-        //label.isHidden = !isFaceUp
-    }
-    
-    
-    //-------------------------------------------------------------
 
-    
-    //////////////////////////
-    // Gridding Logic
-    
-    func cellGridRect(_ rect: CGRect) -> CGRect {
-        return CGRect(x: rect.minX+rect.width/4, y: rect.minY, width: rect.width-rect.width/2, height: rect.height)
-    }
-    
-    func cellGridDraw(_ rect: CGRect, card: SetCard) {
-        let cellGridLayout = Grid.Layout.dimensions(rowCount: card.number.rawValue, columnCount: 1)
-        let cellGridRectangle = cellGridRect(rect)
-        let cellGrid = Grid(layout: cellGridLayout, frame: cellGridRectangle)
-        
-        card.color.result.setStroke()
-        card.color.result.setFill()
-        
-        for cell in 0..<cellGrid.cellCount {
-            if let cellGridCell = cellGrid[cell] {
-                drawCircleTemp(cellGridCell, card: card)
-            }
-        }
-    }
-    
-    func cardDrawer(rect: CGRect, card: SetCard) {
-        cellGridDraw(rect, card: card)
-    }
-    
-    
-    
-    //////////////////////////
+    //-------------------------------------------------------------
+    // Drawing Step
     
     override func draw(_ rect: CGRect) {
         
@@ -424,6 +267,9 @@ class SetCardView: UIView {
                 UIColor.gray.setStroke()
                 path.stroke()
                 
+                // testing
+                //var buttonTest = createUIButton(cell)
+                
                 // draw shapes in the grid
                 currentIndex = index
                 masterDrawFunction()
@@ -434,7 +280,7 @@ class SetCardView: UIView {
 
 extension SetCardView {
     private struct Consts {
-        static let cellCount: Int = 12
+        static let cellCount: Int = 15
         static let cardAspectRatio: CGFloat = 1/1.586
         static let centerFontSizeToBoundsHeight: CGFloat = 0.4
         static let shapeRatio: CGFloat = 0.2
