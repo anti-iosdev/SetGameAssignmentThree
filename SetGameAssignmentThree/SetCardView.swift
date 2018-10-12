@@ -287,15 +287,18 @@ class SetCardView: UIView {
         let context = UIGraphicsGetCurrentContext()
         let center = CGPoint(x: rect.midX-squareSize/2, y: rect.midY-squareSize/2)
         let sizeRect = CGSize(width: squareSize, height: squareSize)
-        let drawnRect = CGRect(origin: center, size: sizeRect)
+        let drawnRect = CGRect(origin: CGPoint(x: 0, y: 0), size: sizeRect)
         
-        let rotation = CGAffineTransform(rotationAngle: CGFloat.pi)
-        //drawnRect.applying(rotation)
+        let path = UIBezierPath(rect: drawnRect)
         
-        let rotatedRect = drawnRect.applying(rotation)
+        let diagonalHalf = squareSize/2
+        let pathRotation = CGAffineTransform(rotationAngle: CGFloat.pi/4)
+        let pathTranslation2 = CGAffineTransform(translationX: center.x, y: center.y)
+        let pathTranslation3 = CGAffineTransform(translationX: diagonalHalf, y: -diagonalHalf/2.5)
         
-        let path = UIBezierPath(rect: rotatedRect)
-        
+        path.apply(pathRotation)
+        path.apply(pathTranslation2)
+        path.apply(pathTranslation3)
         
         // making sure of clipping
         context!.saveGState()
@@ -334,15 +337,37 @@ class SetCardView: UIView {
                 if let rect = cardGrid[index] {
                     
                     //drawSquare(rect)
-                    drawCircle(rect)
+                    //drawCircle(rect)
                     //drawOval(rect)
-                    //drawDiamond(rect)
+                    drawDiamond(rect)
                 }
             }
         }
     }
     
     //-------------------------------------------------------------
+    // Corner Labels
+    
+    private func createCornerLabel() -> UILabel {
+        let label = UILabel()
+        // 0 means it wont get cut off
+        // label.numberOfLines = 0
+        addSubview(label)
+        return label
+    }
+    
+    private func configureCornerLabel(_ label: UILabel) {
+        //label.attributedText = cornerString
+        // clears its size
+        //label.frame =
+        label.frame.size = CGSize.zero
+        label.sizeToFit()
+        //label.isHidden = !isFaceUp
+    }
+    
+    
+    //-------------------------------------------------------------
+
     
     //////////////////////////
     // Gridding Logic
@@ -406,6 +431,6 @@ extension SetCardView {
         return cardGrid.cellSize.width * Consts.shapeRatio
     }
     private var squareSize: CGFloat {
-        return shapeSize*1.8
+        return shapeSize*1.5
     }
 }
