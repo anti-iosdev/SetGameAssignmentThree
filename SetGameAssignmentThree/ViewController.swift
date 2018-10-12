@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     //lazy var game = SetGame(numberOfTotalSlots: 12)
     var deck = SetCardDeck()
 
+    var text: String = "testing"
+    
     lazy var cards = shuffledDeck()
     
     func shuffledDeck() -> [SetCard] {
@@ -33,15 +35,19 @@ class ViewController: UIViewController {
         }
     }
     
-    func touchCard(_ sender: UIButton) {
-        if let cardNumber = setCardView.cardButtons.index(of: sender) {
-            print("card index = \(cardNumber)")
-        }
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
+        button.backgroundColor = UIColor.green
+        button.setTitle(text, for: UIControl.State.normal)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+
+        self.view.addSubview(button)
+    }
     
+    @objc func buttonAction(sender: UIButton!) {
+        print("Button Tapped!")
     }
 
 

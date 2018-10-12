@@ -51,8 +51,9 @@ class SetCardView: UIView {
 
     private func createUIButton(_ rect: CGRect) -> UIButton {
         let button = UIButton(frame: rect)
-        addSubview(button)
-        print("\(button)")
+        
+        //self.addSubview(button)
+        //print("\(button)")
         return button
     }
     
