@@ -195,7 +195,7 @@ class SetCardView: UIView {
     
     func drawStripes(_ cellRect: CGRect) {
         //let center = CGPoint(x: cellRect.midX-shapeSize, y: cellRect.midY-shapeSize/2)
-        let width = cellRect.width*1.3
+        let width = cellRect.width*1.4
         var stripeRect = CGRect(x: cellRect.minX-width*0.2, y: cellRect.minY, width: width, height: cellRect.height/2)
         let path = UIBezierPath(rect: stripeRect)
         path.lineWidth = 2.0
@@ -268,9 +268,24 @@ class SetCardView: UIView {
     func drawSquiggle(_ rect: CGRect) {
         let context = UIGraphicsGetCurrentContext()
         let center = CGPoint(x: rect.midX, y: rect.midY)
-        let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: 2*CGFloat.pi, clockwise: true)
+        //let path = UIBezierPath(arcCenter: center, radius: shapeSize, startAngle: 0, endAngle: CGFloat.pi, clockwise: true)
         
+        var movedCenter = center
+        movedCenter.x = movedCenter.x - shapeSize
+        let curvedPath = UIBezierPath(arcCenter: movedCenter, radius: shapeSize, startAngle: 0, endAngle: CGFloat.pi, clockwise: false)
+        
+        //path.append(curvedPath)
         //let pathExperiment = UIBezierPath(
+        
+        // retrying circle shape
+        let centerSemiOne = CGPoint(x: rect.midX+shapeSize/2, y: rect.midY)
+        let centerSemiTwo = CGPoint(x: rect.midX-shapeSize/2, y: rect.midY)
+        
+        let pathSemiOne = UIBezierPath(arcCenter: centerSemiOne, radius: shapeSize, startAngle: 0, endAngle: CGFloat.pi*2, clockwise: true)
+        let pathSemiTwo = UIBezierPath(arcCenter: centerSemiTwo, radius: shapeSize, startAngle: 0, endAngle: CGFloat.pi*2, clockwise: false)
+        
+        let path = pathSemiOne
+        path.append(pathSemiTwo)
         
         // making sure of clipping
         context!.saveGState()
@@ -339,7 +354,8 @@ class SetCardView: UIView {
                     //drawSquare(rect)
                     //drawCircle(rect)
                     //drawOval(rect)
-                    drawDiamond(rect)
+                    //drawDiamond(rect)
+                    drawSquiggle(rect)
                 }
             }
         }
