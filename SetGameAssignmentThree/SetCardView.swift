@@ -9,13 +9,13 @@
 import UIKit
 
 @objc protocol AnswerDelegate {
-    // Method used to tell the delegate that the button was pressed in the subview.
-    // You can add parameters here as you like.
+    // Defined in ViewController
     func buttonWasPressed()
 }
 
 class SetCardView: UIView {
 
+    //-------------------------------------------------------------
     // Essential Definitions
     var deck = [SetCard]() { didSet { setNeedsDisplay(); setNeedsLayout() } }
  
@@ -82,6 +82,15 @@ class SetCardView: UIView {
         button.setTitle(String(currentIndex!), for: UIControl.State.normal)
         button.setTitleColor(UIColor.clear, for: UIControl.State.normal)
         
+        button.layer.cornerRadius = 8.0
+        button.layer.borderWidth = 1.0
+        button.layer.borderColor = UIColor.gray.cgColor
+        
+        if deck[currentIndex!].isSelected {
+            button.layer.borderWidth = 3.0
+            button.layer.borderColor = UIColor.blue.cgColor
+        }
+        
         button.showsTouchWhenHighlighted = true
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         button.addTarget(self, action: #selector(someButtonPressed), for: .touchUpInside)
@@ -97,9 +106,11 @@ class SetCardView: UIView {
     
     func buttonInitializer() {
         for index in 0..<cardGrid.cellCount {
-            if let cell = cardGrid[index] {
-                currentIndex = index
-                var button = createUIButton(currentCardCell!)
+            if deck[index].isFaceUp {
+                if let cell = cardGrid[index] {
+                    currentIndex = index
+                    var button = createUIButton(currentCardCell!)
+                }
             }
         }
     }
@@ -117,13 +128,10 @@ class SetCardView: UIView {
         
         // initialize the Grid whenever the layout changes
         cardGrid = Grid(layout: cardGridLayout, frame: bounds)
-        cardGrid.cellCount = deck.count
+        cardGrid.cellCount = deck.filter() { $0.isFaceUp }.count
         
-        /////////////////////////////////////////////
+        // initialize buttons
         buttonInitializer()
-        //print("cardButtons.count = \(cardButtons.count)")
-        //configureButton()
-        
     }
     
     //-------------------------------------------------------------
@@ -304,10 +312,10 @@ class SetCardView: UIView {
         for index in 0..<cardGrid.cellCount {
             if let cell = cardGrid[index] {
                 // draw in the grid
-                let path = UIBezierPath(rect: cell)
-                path.lineWidth = 2.0
-                UIColor.gray.setStroke()
-                path.stroke()
+                //let path = UIBezierPath(rect: cell)
+                //path.lineWidth = 2.0
+                //UIColor.gray.setStroke()
+                //path.stroke()
 
                 // draw shapes in the grid
                 currentIndex = index

@@ -66,8 +66,8 @@
 			children = (
 				E95EFDFA21658E0F005660BB /* ViewController.swift */,
 				E95EFE11216595C4005660BB /* SetCardView.swift */,
-				E95EFE0D21659103005660BB /* SetCard.swift */,
 				E9EFA969216C68C200D83FFB /* SetGame.swift */,
+				E95EFE0D21659103005660BB /* SetCard.swift */,
 				E9EFA967216C682400D83FFB /* SetCardDeck.swift */,
 				E95EFDFC21658E10005660BB /* Main.storyboard */,
 				E95EFE0B21658E56005660BB /* Grid.swift */,

@@ -84,6 +84,22 @@ class SetGame
                     cards[index].isSelected = false
                 }
                 cards[index].isSelected = true
+            } else if let matchIndex = activeIndices, matchIndex.contains(index) {
+                //print("this is already a selected card!")
+                for activeIndex in matchIndex.indices {
+                    if matchIndex[activeIndex] == index {
+                        activeIndices!.remove(at: activeIndex)
+                    }
+                }
+                if let matchIndex = activeIndices {
+                    for index in cards.indices {
+                        if matchIndex.contains(index) {
+                            cards[index].isSelected = true
+                        } else {
+                            cards[index].isSelected = false
+                        }
+                    }
+                }
             }
         }
     }
@@ -206,8 +222,5 @@ class SetGame
             }
         }
         shuffleCard()
-        //        for index in deck.cards.indices {
-        //            cards.append(deck.cards[index])
-        //        }
     }
 }

@@ -11,20 +11,20 @@ import UIKit
 class ViewController: UIViewController, AnswerDelegate {
 
     // Essential Definitions
+    var game = SetGame(numberOfTotalSlots: 81)
     var deck = SetCardDeck()
     var test = [CGRect]()
     
     func buttonWasPressed() {
-        // UIViewController can handle SomeView's button press.
-        print("uiviewcontroller was accessed")
-        //print("\(setCardView.cardGrid.cellCount)")
-        print("The currently selected card: \(setCardView.selectedButtonIndex!)")
+        let selectedButtonIndex = setCardView.selectedButtonIndex!
+        
+        game.chooseCard(at: selectedButtonIndex)
+        print("The currently selected card: \(selectedButtonIndex)")
+        updateViewFromModel()
     }
     
-    
-
-    
     lazy var cards = shuffledDeck()
+    lazy var cards2 = game.cards
     
     func shuffledDeck() -> [SetCard] {
         var cards = [SetCard]()
@@ -38,8 +38,12 @@ class ViewController: UIViewController, AnswerDelegate {
     
     @IBOutlet weak var setCardView: SetCardView! {
         didSet {
-            setCardView.deck = cards
+            setCardView.deck = cards2
         }
+    }
+    
+    func updateViewFromModel() {
+        setCardView.deck = game.cards
     }
     
     override func viewDidLoad() {
