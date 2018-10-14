@@ -54,14 +54,17 @@ class SetGame
                     // we now have an array of the needed three to be compared
                     if var matchMaker = activeIndices {
                         matchMaker.append(index)
-                        if setMatcher(at: matchMaker) {
-                            for index in matchMaker {
-                                cards[index].isMatched = true
-                                cards[index].isFaceUp = false
-                                // print("A set was found!")
-                                uglyColorSolution = 1
-                                matchSuccess = 1
+                        if setMatcher(matchMaker) {
+                            var uglyCountSolution = 0
+                            for index in cards.indices {
+                                if matchMaker.contains(index) {
+                                    cards.remove(at: index-uglyCountSolution)
+                                    uglyCountSolution += 1
+                                }
                             }
+                            print("A set was found!")
+                            uglyColorSolution = 1
+                            matchSuccess = 1
                             score += 5
                         } else {
                             uglyColorSolution = 2
@@ -104,7 +107,7 @@ class SetGame
         }
     }
     
-    func setMatcher(at checkedIndices: [Int]) -> Bool{
+    func setMatcher(_ checkedIndices: [Int]) -> Bool{
         var numberArray = [Int]()
         var symbolArray = [Int]()
         var shadingArray = [Int]()
@@ -167,37 +170,6 @@ class SetGame
         return true
     }
     
-    func copyOfSimpleChooseCard(at index: Int) {
-        uglyColorSolution = 0
-        if cards[index].isFaceUp {
-            if let matchIndex = activeIndices, !matchIndex.contains(index) {
-                if matchIndex.count < 2 {
-                    activeIndices!.append(index)
-                    cards[index].isSelected = true
-                } else {
-                    // check for matching here
-                    // print("activeIndices = \(String(describing: activeIndices)), index = \(index)")
-                    activeIndices!.append(index)
-                    
-                    for index in activeIndices ?? [] {
-                        cards[index].isMatched = true
-                        uglyColorSolution = 2
-                    }
-                    
-                    // reset
-                    activeIndices = nil
-                    cards[index].isSelected = true
-                }
-            } else if activeIndices == nil {
-                activeIndices = [index]
-                for index in cards.indices {
-                    cards[index].isSelected = false
-                }
-                cards[index].isSelected = true
-            }
-        }
-    }
-    
     func selectionBot (at index: Int) {
         cards[index].isFaceUp ? (cards[index].isSelected = true) : (cards[index].isSelected = false)
     }
@@ -211,7 +183,7 @@ class SetGame
     init(numberOfTotalSlots: Int) {
         func shuffleCard() {
             for index in deck.cards.indices {
-                if index >= 12 {
+                if index >= 36 {
                     var cardTemp = deck.draw()!
                     cardTemp.isFaceUp = false
                     cards.append(cardTemp)

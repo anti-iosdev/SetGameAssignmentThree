@@ -19,7 +19,6 @@ class ViewController: UIViewController, AnswerDelegate {
         let selectedButtonIndex = setCardView.selectedButtonIndex!
         
         game.chooseCard(at: selectedButtonIndex)
-        print("The currently selected card: \(selectedButtonIndex)")
         updateViewFromModel()
     }
     
@@ -43,7 +42,16 @@ class ViewController: UIViewController, AnswerDelegate {
     }
     
     func updateViewFromModel() {
+        setCardView.uglyColorSolution = game.uglyColorSolution
         setCardView.deck = game.cards
+        
+        let swipe = UISwipeGestureRecognizer(target: self, action: #selector(testFunction))
+        swipe.direction = [.left,.right]
+        setCardView.addGestureRecognizer(swipe)
+    }
+    
+    @objc func testFunction() {
+        print("swiped")
     }
     
     override func viewDidLoad() {

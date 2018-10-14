@@ -18,7 +18,8 @@ class SetCardView: UIView {
     //-------------------------------------------------------------
     // Essential Definitions
     var deck = [SetCard]() { didSet { setNeedsDisplay(); setNeedsLayout() } }
- 
+    var uglyColorSolution = 0 { didSet { setNeedsDisplay(); setNeedsLayout() } }
+    
     let cardGridLayout = Grid.Layout.aspectRatio(Consts.cardAspectRatio)
     lazy var cardGrid = Grid(layout: cardGridLayout, frame: bounds)
     
@@ -91,6 +92,12 @@ class SetCardView: UIView {
             button.layer.borderColor = UIColor.blue.cgColor
         }
         
+        if uglyColorSolution == 1 {
+            button.layer.borderColor = UIColor.green.cgColor
+        } else if uglyColorSolution == 2 {
+            button.layer.borderColor = UIColor.red.cgColor
+        }
+        
         button.showsTouchWhenHighlighted = true
         button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         button.addTarget(self, action: #selector(someButtonPressed), for: .touchUpInside)
@@ -106,7 +113,7 @@ class SetCardView: UIView {
     
     func buttonInitializer() {
         for index in 0..<cardGrid.cellCount {
-            if deck[index].isFaceUp {
+            if deck[index].isFaceUp, !deck[index].isMatched {
                 if let cell = cardGrid[index] {
                     currentIndex = index
                     var button = createUIButton(currentCardCell!)
