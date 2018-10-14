@@ -15,65 +15,16 @@ import UIKit
 }
 
 class SetCardView: UIView {
-    
-    /////////////////////////////////////////////////////////////////////////////////
-    
-    var answerDelegate: AnswerDelegate?
-    
-    var button = UIButton(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
-    
-    // Once your view & button has been initialized, configure the button's target.
-    func configureButton() {
-        //print("configureButton()")
-        button.backgroundColor = UIColor.green
-        button.setTitle("goddammit", for: UIControl.State.normal)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        // Set your target
-        button.addTarget(self, action: #selector(someButtonPressed), for: .touchUpInside)
-        addSubview(button)
-    }
-    
-    @objc func someButtonPressed(_ sender: UIButton) {
-        //print("delegate")
-        answerDelegate?.buttonWasPressed()
-    }
-    
-    /////////////////////////////////////////////////////////////////////////////////
-    
+
     // Essential Definitions
     var deck = [SetCard]() { didSet { setNeedsDisplay(); setNeedsLayout() } }
  
     let cardGridLayout = Grid.Layout.aspectRatio(Consts.cardAspectRatio)
     lazy var cardGrid = Grid(layout: cardGridLayout, frame: bounds)
     
-    // Init the labels
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        // removes subviews from the superview
-        for view in self.subviews{
-            view.removeFromSuperview()
-        }
-        
-        // initialize the Grid whenever the layout changes
-        cardGrid = Grid(layout: cardGridLayout, frame: bounds)
-        cardGrid.cellCount = Consts.cellCount
-        
-        /////////////////////////////////////////////
-        configureButton()
-        
-//        let button2 = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
-//        button2.backgroundColor = UIColor.green
-//        button2.setTitle("goddammit", for: UIControl.State.normal)
-//        button2.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-//        addSubview(button2)
-    }
-
     //-------------------------------------------------------------
-    // Refactored Code
-    
-    /////////////////////////////////////////////
     // Defining Variables
+
     var currentIndex: Int? {
         didSet {
             if let index = currentIndex {
@@ -82,46 +33,7 @@ class SetCardView: UIView {
             }
         }
     }
-    
-    //-------------------------------------------------------------
-    // Test Code
-    
-    var cardButtons = [UIButton]()
-
-    /*
-             let testingBounds = setCardView.bounds
-             let button = UIButton(frame: testingBounds)
-             button.backgroundColor = UIColor.green
-             button.setTitle("goddammit", for: UIControl.State.normal)
-             button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
- 
-    */
-    
-    private func createUIButton(_ rect: CGRect) -> UIButton {
-        let button = UIButton(frame: rect)
-        button.backgroundColor = UIColor.green
-        button.setTitle("goddammit", for: UIControl.State.normal)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-        
-        self.addSubview(button)
-        //print("\(button)")
-        return button
-    }
-
-    @objc func buttonAction(sender: UIButton!) {
-        //print("Button Tapped!")
-    }
-    
-    func getCardButtons() -> [UIButton] {
-        return cardButtons
-    }
-    
-    //var cardButtonGrid = [CGRect]()
-    
-    //-------------------------------------------------------------
-    
     // set after currentIndex is set
-    var cardCellMiniGridLayout: Grid.Layout?
     var currentCard: SetCard? {
         didSet {
             if let card = currentCard {
@@ -129,12 +41,12 @@ class SetCardView: UIView {
             }
         }
     }
+    var cardCellMiniGridLayout: Grid.Layout?
     var currentCardCell: CGRect? {
         didSet {
             if let rect = currentCardCell {
                 cardCellMini = cardCellMiniConverter(rect)
-                cardButtons.append(createUIButton(rect))
-                //cardButtonGrid.append(rect)
+                //cardButtons.append(createUIButton(rect))
             }
         }
     }
@@ -146,13 +58,77 @@ class SetCardView: UIView {
         }
     }
     var cardCellMiniGrid: Grid?
-    
     func cardCellMiniConverter(_ rect: CGRect) -> CGRect {
         return CGRect(x: rect.minX+rect.width/4, y: rect.minY, width: rect.width-rect.width/2, height: rect.height)
     }
     
-    /////////////////////////////////////////////
+    //-------------------------------------------------------------
+    // Button Code
+    
+    var cardButtons = [UIButton]()
+    
+    lazy var deckCopy = deck
+    var selectedButtonIndex: Int?
+    
+    var answerDelegate: AnswerDelegate?
+    @objc func someButtonPressed(_ sender: UIButton) {
+        selectedButtonIndex = Int((sender.titleLabel?.text)!)
+        answerDelegate?.buttonWasPressed()
+    }
+    
+    private func createUIButton(_ rect: CGRect) -> UIButton {
+        let button = UIButton(frame: rect)
+        
+        button.setTitle(String(currentIndex!), for: UIControl.State.normal)
+        button.setTitleColor(UIColor.clear, for: UIControl.State.normal)
+        
+        button.showsTouchWhenHighlighted = true
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        button.addTarget(self, action: #selector(someButtonPressed), for: .touchUpInside)
+        
+        self.addSubview(button)
+        return button
+    }
+    
+    @objc func buttonAction(sender: UIButton!) {
+        //print("Button index: \(sender.titleLabel!)")
+        //print("\(cardButtons.count)")
+    }
+    
+    func buttonInitializer() {
+        for index in 0..<cardGrid.cellCount {
+            if let cell = cardGrid[index] {
+                currentIndex = index
+                var button = createUIButton(currentCardCell!)
+            }
+        }
+    }
+    
+    //-------------------------------------------------------------
+    // Laying Out Subviews
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        // removes subviews from the superview
+        for view in self.subviews{
+            view.removeFromSuperview()
+        }
+        
+        // initialize the Grid whenever the layout changes
+        cardGrid = Grid(layout: cardGridLayout, frame: bounds)
+        cardGrid.cellCount = deck.count
+        
+        /////////////////////////////////////////////
+        buttonInitializer()
+        //print("cardButtons.count = \(cardButtons.count)")
+        //configureButton()
+        
+    }
+    
+    //-------------------------------------------------------------
     // Drawing Logic
+    
     func drawStripes(_ cellRect: CGRect) {
         //let center = CGPoint(x: cellRect.midX-shapeSize, y: cellRect.midY-shapeSize/2)
         let width = cellRect.width*1.4
@@ -321,7 +297,7 @@ class SetCardView: UIView {
     }
     
     //-------------------------------------------------------------
-    // Drawing Step
+    // Draw Function
     
     override func draw(_ rect: CGRect) {
         
@@ -332,15 +308,13 @@ class SetCardView: UIView {
                 path.lineWidth = 2.0
                 UIColor.gray.setStroke()
                 path.stroke()
-//
-//                // draw shapes in the grid
+
+                // draw shapes in the grid
                 currentIndex = index
                 masterDrawFunction()
             }
         }
-        
     }
-    
 }
 
 extension SetCardView {

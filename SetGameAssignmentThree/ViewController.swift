@@ -10,18 +10,19 @@ import UIKit
 
 class ViewController: UIViewController, AnswerDelegate {
 
-    //lazy var someView = setCardView
+    // Essential Definitions
+    var deck = SetCardDeck()
+    var test = [CGRect]()
     
     func buttonWasPressed() {
         // UIViewController can handle SomeView's button press.
         print("uiviewcontroller was accessed")
-        print("\(setCardView.cardGrid.cellCount)")
+        //print("\(setCardView.cardGrid.cellCount)")
+        print("The currently selected card: \(setCardView.selectedButtonIndex!)")
     }
     
     
-    var deck = SetCardDeck()
-    
-    var test = [CGRect]()
+
     
     lazy var cards = shuffledDeck()
     
@@ -45,21 +46,7 @@ class ViewController: UIViewController, AnswerDelegate {
         super.viewDidLoad()
         
         setCardView.answerDelegate = self
-        //self.view.addSubview(setCardView)
-        //setCardView.bringSubviewToFront(setCardView)
-//        let testingBounds = setCardView.bounds
-//        let button = UIButton(frame: testingBounds)
-//        button.backgroundColor = UIColor.green
-//        button.setTitle("goddammit", for: UIControl.State.normal)
-//        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-//
-//        self.view.addSubview(button)
-    }
-    
-    @objc func buttonAction(sender: UIButton!) {
-        print("Button Tapped! in uiviewcontroller")
-    }
 
-
+    }
 }
 
