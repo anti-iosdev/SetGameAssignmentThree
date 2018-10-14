@@ -8,12 +8,42 @@
 
 import UIKit
 
+@objc protocol AnswerDelegate {
+    // Method used to tell the delegate that the button was pressed in the subview.
+    // You can add parameters here as you like.
+    func buttonWasPressed()
+}
+
 class SetCardView: UIView {
+    
+    /////////////////////////////////////////////////////////////////////////////////
+    
+    var answerDelegate: AnswerDelegate?
+    
+    var button = UIButton(frame: CGRect(x: 0, y: 0, width: 200, height: 200))
+    
+    // Once your view & button has been initialized, configure the button's target.
+    func configureButton() {
+        //print("configureButton()")
+        button.backgroundColor = UIColor.green
+        button.setTitle("goddammit", for: UIControl.State.normal)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+        // Set your target
+        button.addTarget(self, action: #selector(someButtonPressed), for: .touchUpInside)
+        addSubview(button)
+    }
+    
+    @objc func someButtonPressed(_ sender: UIButton) {
+        //print("delegate")
+        answerDelegate?.buttonWasPressed()
+    }
+    
+    /////////////////////////////////////////////////////////////////////////////////
     
     // Essential Definitions
     var deck = [SetCard]() { didSet { setNeedsDisplay(); setNeedsLayout() } }
-
-    let cardGridLayout = Grid.Layout.aspectRatio(Consts.cardAspectRatio) 
+ 
+    let cardGridLayout = Grid.Layout.aspectRatio(Consts.cardAspectRatio)
     lazy var cardGrid = Grid(layout: cardGridLayout, frame: bounds)
     
     // Init the labels
@@ -28,6 +58,15 @@ class SetCardView: UIView {
         // initialize the Grid whenever the layout changes
         cardGrid = Grid(layout: cardGridLayout, frame: bounds)
         cardGrid.cellCount = Consts.cellCount
+        
+        /////////////////////////////////////////////
+        configureButton()
+        
+//        let button2 = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
+//        button2.backgroundColor = UIColor.green
+//        button2.setTitle("goddammit", for: UIControl.State.normal)
+//        button2.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+//        addSubview(button2)
     }
 
     //-------------------------------------------------------------
@@ -49,15 +88,35 @@ class SetCardView: UIView {
     
     var cardButtons = [UIButton]()
 
+    /*
+             let testingBounds = setCardView.bounds
+             let button = UIButton(frame: testingBounds)
+             button.backgroundColor = UIColor.green
+             button.setTitle("goddammit", for: UIControl.State.normal)
+             button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+ 
+    */
+    
     private func createUIButton(_ rect: CGRect) -> UIButton {
         let button = UIButton(frame: rect)
+        button.backgroundColor = UIColor.green
+        button.setTitle("goddammit", for: UIControl.State.normal)
+        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
         
-        //self.addSubview(button)
+        self.addSubview(button)
         //print("\(button)")
         return button
     }
+
+    @objc func buttonAction(sender: UIButton!) {
+        //print("Button Tapped!")
+    }
     
+    func getCardButtons() -> [UIButton] {
+        return cardButtons
+    }
     
+    //var cardButtonGrid = [CGRect]()
     
     //-------------------------------------------------------------
     
@@ -75,6 +134,7 @@ class SetCardView: UIView {
             if let rect = currentCardCell {
                 cardCellMini = cardCellMiniConverter(rect)
                 cardButtons.append(createUIButton(rect))
+                //cardButtonGrid.append(rect)
             }
         }
     }
@@ -254,7 +314,12 @@ class SetCardView: UIView {
             }
         }
     }
-
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        setNeedsDisplay()
+        setNeedsLayout()
+    }
+    
     //-------------------------------------------------------------
     // Drawing Step
     
@@ -267,21 +332,20 @@ class SetCardView: UIView {
                 path.lineWidth = 2.0
                 UIColor.gray.setStroke()
                 path.stroke()
-                
-                // testing
-                //var buttonTest = createUIButton(cell)
-                
-                // draw shapes in the grid
+//
+//                // draw shapes in the grid
                 currentIndex = index
                 masterDrawFunction()
             }
         }
+        
     }
+    
 }
 
 extension SetCardView {
     private struct Consts {
-        static let cellCount: Int = 15
+        static let cellCount: Int = 81
         static let cardAspectRatio: CGFloat = 1/1.586
         static let centerFontSizeToBoundsHeight: CGFloat = 0.4
         static let shapeRatio: CGFloat = 0.2

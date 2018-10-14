@@ -8,12 +8,20 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, AnswerDelegate {
 
-    //lazy var game = SetGame(numberOfTotalSlots: 12)
+    //lazy var someView = setCardView
+    
+    func buttonWasPressed() {
+        // UIViewController can handle SomeView's button press.
+        print("uiviewcontroller was accessed")
+        print("\(setCardView.cardGrid.cellCount)")
+    }
+    
+    
     var deck = SetCardDeck()
-
-    var text: String = "testing"
+    
+    var test = [CGRect]()
     
     lazy var cards = shuffledDeck()
     
@@ -27,8 +35,6 @@ class ViewController: UIViewController {
         return cards
     }
     
-    /////
-    
     @IBOutlet weak var setCardView: SetCardView! {
         didSet {
             setCardView.deck = cards
@@ -38,16 +44,20 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 100, height: 50))
-        button.backgroundColor = UIColor.green
-        button.setTitle(text, for: UIControl.State.normal)
-        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
-
-        self.view.addSubview(button)
+        setCardView.answerDelegate = self
+        //self.view.addSubview(setCardView)
+        //setCardView.bringSubviewToFront(setCardView)
+//        let testingBounds = setCardView.bounds
+//        let button = UIButton(frame: testingBounds)
+//        button.backgroundColor = UIColor.green
+//        button.setTitle("goddammit", for: UIControl.State.normal)
+//        button.addTarget(self, action: #selector(buttonAction), for: .touchUpInside)
+//
+//        self.view.addSubview(button)
     }
     
     @objc func buttonAction(sender: UIButton!) {
-        print("Button Tapped!")
+        print("Button Tapped! in uiviewcontroller")
     }
 
 
